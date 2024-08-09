@@ -49,7 +49,7 @@ public:
      * @brief  Take the screenshot
      * @param displayIndex  The index of the display
      */
-    void captureScreen(int _displayIndex = 0, int _x = 0, int _y = 0, int _w = -1, int _h = -1);
+    void captureScreen(int _displayIndex = 0, int _x = 0, int _y = 0, int _w = -1, int _h = -1, int format = SCREEN_FORMAT_RGB888);
 
     /**
      * @brief  Set the callback to be called after capturing

@@ -122,7 +122,7 @@ Screen::Rotation Screen::displayRotation(screen_display_t _display) const
     return (Rotation)rotation;
 }
 
-void Screen::captureScreen(int _displayIndex, int _x, int _y, int _w, int _h)
+void Screen::captureScreen(int _displayIndex, int _x, int _y, int _w, int _h, int format)
 {
     if (displayCount() == 0) {
         printf("No display found!\n");
@@ -170,7 +170,7 @@ void Screen::captureScreen(int _displayIndex, int _x, int _y, int _w, int _h)
     int val = SCREEN_USAGE_READ | SCREEN_USAGE_NATIVE;
     screen_set_pixmap_property_iv(pixmap, SCREEN_PROPERTY_USAGE, &val);
 
-    val = SCREEN_FORMAT_RGB888;
+    val = format;
     screen_set_pixmap_property_iv(pixmap, SCREEN_PROPERTY_FORMAT, &val);
 
     int err =    screen_set_pixmap_property_iv(pixmap, SCREEN_PROPERTY_BUFFER_SIZE, rect + 2);

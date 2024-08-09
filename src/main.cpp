@@ -1,59 +1,29 @@
 #include "screenmanager.h"
+#include "encoder.h"
 #include "config.h"
 #include "fpng.h"
 
 void saveImage(void *_data, int *rect, int _stride);
-void saveBmp(char *_data, int _w, int _h, int _stride);
+void saveBmp(unsigned char *_data, int _w, int _h, int _stride, bool use32bpp);
 void savePng(char *_data, int _w, int _h, int _stride);
 
-void saveBmp(char *_data, int _w, int _h, int _stride)
+void saveBmp(unsigned char *_data, int _w, int _h, int _stride, bool use32bpp)
 {
-    // https://stackoverflow.com/questions/2654480/writing-bmp-image-in-pure-c-c-without-other-libraries
+    size_t fsize = 0;
 
-    // the length of each row must be a multiplier of 4, so add padding if necessary
-    const int padding = (4 - (_w * 3) % 4) % 4;
-    int filesize = 54 + (3 * _w + padding) * _h;
-
-    char *img = (char *)std::malloc(filesize);
-
-    int fsize = 0;
-    const auto append = [&](char *data, int size) {
-        memcpy(img + fsize, data, size);
-        fsize += size;
-    };
-
-    char bmpFileHeader[14] = {'B','M', 0,0,0,0, 0,0, 0,0, 54,0,0,0};
-    char bmpInfoHeader[40] = {40,0,0,0, 0,0,0,0, 0,0,0,0, 1,0, 24,0};
-    char bmpPad[3] = {0,0,0};
-
-    bmpFileHeader[ 2] = (char)(filesize      );
-    bmpFileHeader[ 3] = (char)(filesize >>  8);
-    bmpFileHeader[ 4] = (char)(filesize >> 16);
-    bmpFileHeader[ 5] = (char)(filesize >> 24);
-
-    bmpInfoHeader[ 4] = (char)(      _w      );
-    bmpInfoHeader[ 5] = (char)(      _w >>  8);
-    bmpInfoHeader[ 6] = (char)(      _w >> 16);
-    bmpInfoHeader[ 7] = (char)(      _w >> 24);
-    bmpInfoHeader[ 8] = (char)(      _h      );
-    bmpInfoHeader[ 9] = (char)(      _h >>  8);
-    bmpInfoHeader[10] = (char)(      _h >> 16);
-    bmpInfoHeader[11] = (char)(      _h >> 24);
-
-    append(bmpFileHeader, 14);
-    append(bmpInfoHeader, 40);
-
-    for(int i = _h - 1; i >= 0; --i) {
-        append(_data + _stride * i, 3 * _w);
-        append(bmpPad, padding);
-    }
+    unsigned char *img = use32bpp 
+    ? Encoder::encodeBmp32(fsize, _data, _w, _h, _stride)
+    : Encoder::encodeBmp24(fsize, _data, _w, _h, _stride)
 
     auto path = Config::instance()->getFileName("bmp");  
+
     FILE *f = fopen(path.c_str(), "wb");
     if (!f) {
         printf("Failed opening file: %s\n", path.c_str());
+        std::free(img);
         return;
     }
+
     fwrite(img, fsize, 1, f);
     fclose(f);
 
@@ -88,8 +58,10 @@ void saveImage(void *_data, int *rect, int _stride)
 
     if (Config::instance()->getImageType() == Config::ImageType::PNG) {
         savePng((char *)_data, w, h, _stride);
+    } else if (Config::instance()->getImageType() == Config::ImageType::BMP32) {
+        saveBmp((unsigned char *)_data, w, h, _stride, true);
     } else {
-        saveBmp((char *)_data, w, h, _stride);
+        saveBmp((unsigned char *)_data, w, h, _stride, false);
     }
 }
 
@@ -106,7 +78,9 @@ int main(int argc, char *argv[])
     screen.captureScreen(
         config->getDisplayIndex(),
         config->getX(), config->getY(),
-        config->getW(), config->getH());
+        config->getW(), config->getH(),
+        config->getImageType() == Config::ImageType::BMP32 ? SCREEN_FORMAT_RGBA8888 : SCREEN_FORMAT_RGB888
+    );
 
     return 0;
 }

@@ -11,7 +11,8 @@ class Config {
 public:
     enum class ImageType
     {
-        BMP,
+        BMP24,
+        BMP32,
         PNG
     };
 
@@ -69,8 +70,10 @@ public:
             if (key == "type") {
                 if (value == "png") {
                     m_type = ImageType::PNG;
+                } else if (value == "bmp32") {
+                    m_type = ImageType::BMP32;
                 } else {
-                    m_type = ImageType::BMP;
+                    m_type = ImageType::BMP24;
                 }
             }
         }
@@ -118,7 +121,7 @@ private:
     int m_y {0};
     int m_w {-1};
     int m_h {-1};
-    ImageType m_type {ImageType::BMP};
+    ImageType m_type {ImageType::BMP24};
 };
 
 #endif // CONFIG_H
