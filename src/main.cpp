@@ -13,7 +13,7 @@ void saveBmp(unsigned char *_data, int _w, int _h, int _stride, bool use32bpp)
 
     unsigned char *img = use32bpp 
     ? Encoder::encodeBmp32(fsize, _data, _w, _h, _stride)
-    : Encoder::encodeBmp24(fsize, _data, _w, _h, _stride)
+    : Encoder::encodeBmp24(fsize, _data, _w, _h, _stride);
 
     auto path = Config::instance()->getFileName("bmp");  
 
