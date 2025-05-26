@@ -1,4 +1,4 @@
-# Better screenshot (`betterss`)
+# Quick screenshot
 
 This project works as a replacement for QNX's `screenshot`
 
@@ -6,18 +6,20 @@ The [`screenshot`](https://www.qnx.com/developers/docs/7.0.0/com.qnx.doc.screen/
 
 ## Feature
 
-| Feature                              | [`screenshot`](https://www.qnx.com/developers/docs/7.0.0/com.qnx.doc.screen/topic/manual/screenshot.html) | `betterss` |
+| Feature                              | [`screenshot`](https://www.qnx.com/developers/docs/7.0.0/com.qnx.doc.screen/topic/manual/screenshot.html) | `quick screenshot` |
 |--------------------------------------|------------|----------|
 | Capture any display                  |  ✅   |  ✅ |
 | Capture any area of the screen       |  ❌   |  ✅ |
 | Support PNG                          |  ❌   |  ✅ |
 
 ## Performance
-|                                      | [`screenshot`](https://www.qnx.com/developers/docs/7.0.0/com.qnx.doc.screen/topic/manual/screenshot.html) | `betterss` |
+|                                      | [`screenshot`](https://www.qnx.com/developers/docs/7.0.0/com.qnx.doc.screen/topic/manual/screenshot.html) | `quick screenshot` |
 |--------------------------------------|------------|----------|
 | Full screen capture time (1920x1080) | ~1.47s     |  **~0.10s** (14.7 times faster)  |
 
 ## Usage
+
+Using prebuilt binary `betterss`
 
 Full screen capture:
 ```shell
